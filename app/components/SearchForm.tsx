@@ -1,10 +1,13 @@
-import React from 'react'
-import { SearchFormProps } from '@/types/types'
+import { useState } from 'react'
 import Button from '@components/Button'
+import { SearchFormProps } from '@/types/types'
 
 const SearchForm = ({ userQuery, onQueryChange, onSubmit }: SearchFormProps) => {
+
+	const [buttonAction, setButtonAction] = useState<'search' | 'random'> ('search');
+	
 	return (
-		<form onSubmit={onSubmit} className='flex gap-2 mb-6'>
+		<form onSubmit={(e) => onSubmit(e, buttonAction)} className='flex gap-2 mb-6'>
 			<input
 				type='text'
 				value={userQuery}
@@ -12,8 +15,8 @@ const SearchForm = ({ userQuery, onQueryChange, onSubmit }: SearchFormProps) => 
 				placeholder='Digite uma palavra e receba uma piada relacionada do Chuck Norris'
 				className='flex-1 p-2 border rounded'
 			/>
-			<Button label='Buscar' value='search' />
-			<Button label='Quero uma piadoca agora!' value='random' bgColor='bg-green-600' />
+			<Button label='Buscar' value='search' onClick={() => setButtonAction('search')}/>
+			<Button label='Quero uma piadoca agora!' value='random' onClick={() => setButtonAction('random')} bgColor='bg-green-600' />
       
 		</form>
 	);

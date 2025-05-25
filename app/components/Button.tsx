@@ -8,12 +8,15 @@ const Button = ({
 	bgColor = 'bg-blue-600',
 	textColor = 'text-white',
 	borderColor = '',
+  type = 'submit',
+  onClick
 }: ButtonProps) => {
   return (
     <button
-			type='submit'
 			name={name}
+      type={type}
 			value={value}
+      onClick={onClick}
 			className={`${bgColor} ${textColor} ${borderColor} px-4 py-2 rounded`}
 		>
 			{label}

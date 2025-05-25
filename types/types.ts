@@ -1,9 +1,7 @@
-import type { FormEventHandler } from 'react';
-
 export type SearchFormProps = {
   userQuery: string;
   onQueryChange: (value: string) => void;
-  onSubmit: FormEventHandler<HTMLFormElement>;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>, action: 'search' | 'random') => void;
 };
 
 export type JokeType = {
@@ -24,6 +22,8 @@ export type ButtonProps = {
 	bgColor?: string;
 	textColor?: string;
 	borderColor?: string;
+  type?: 'submit' | 'button' | 'reset';
+  onClick?: () => void;
 };
 
 

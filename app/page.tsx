@@ -1,16 +1,12 @@
 'use client';
 import { useState } from 'react';
-
-type Joke = {
-	id: string;
-	icon_url: string;
-	url: string;
-	value: string;
-};
+import { JokeType } from '@/types/types';
+import SearchForm from '@components/SearchForm';
+import JokeList from '@components/JokeList';
 
 export default function Home() {
 	const [userQuery, setUserQuery] = useState('');
-	const [queryResults, setQueryResults] = useState<Joke[]>([]);
+	const [queryResults, setQueryResults] = useState<JokeType[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(''); // initialize error state as empty string
 
@@ -53,7 +49,7 @@ export default function Home() {
 			} else {
 				setError('Ops! Algo deu errado. Por favor, tente novamente.');
 			}
-      
+
 		} finally {
 			setLoading(false);
 		}
@@ -61,36 +57,16 @@ export default function Home() {
 
 	return (
 		<main className='max-w-2xl mx-auto px-4 py-10'>
-			<h1 className='text-3xl font-bold text-center mb-6'>Buscador de Pidas do Chuck</h1>
-
-			<form onSubmit={handleSearch} className='flex gap-2 mb-6'>
-				<input type='text' value={userQuery} onChange={(e) => setUserQuery(e.target.value)} placeholder='Busque uma piada' className='flex-1 p-2 border rounded' />
-				<button type='submit' name='action' value='search' className='bg-blue-600 text-white px-4 py-2 rounded'>
-					Search
-				</button>
-
-				<button type='submit' name='action' value='random' className='bg-green-600 text-white px-4 py-2 rounded'>
-					Quero uma piadoca agora!
-				</button>
-			</form>
-
-			{loading && <p className='text-center'>Carregando</p>}
+			
+      <h1 className='text-3xl font-bold text-center mb-6'>Buscador de Piadas do Chuck</h1>
+			
+      <SearchForm userQuery={userQuery} onQueryChange={setUserQuery} onSubmit={handleSearch} />
+			
+      {loading && <p className='text-center'>Carregando...</p>}
 			{error && <p className='text-center text-red-600'>{error}</p>}
-
-			<ul className='space-y-4'>
-				{queryResults.map(
-					(joke) => (
-						(
-							<li key={joke.id} className='p-4 border rounded shadow'>
-								<p>{joke.value}</p>
-								{/*  <a href={joke.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm">
-              Ver na api
-            </a> */}
-							</li>
-						)
-					)
-				)}
-			</ul>
+			
+      <JokeList jokes={queryResults} />
+      
 		</main>
 	);
 }

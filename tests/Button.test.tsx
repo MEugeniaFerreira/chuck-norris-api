@@ -1,51 +1,57 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import Button from '@components/Button'
+import Button from '../app/components/Button';
 
 describe('Button', () => {
+	it('renderiza botão com o texto correto', () => {
+		render(<Button label='Buscar' value='search' />);
+		expect(screen.getByRole('button', { name: 'Buscar' })).toBeInTheDocument();
+	});
 
-  it('renderiza com o texto correto', () => {
-    render(<Button label="Buscar" value="search" />);
-    expect(screen.getByRole('button', { name: 'Buscar' })).toBeInTheDocument();
-  });
+	it('aplica as classes de estilo', () => {
+		render(<Button label='Custom' value='custom' bgColor='bg-red-500' textColor='text-black' borderColor='border border-black' />);
 
-  it('aplica as classes corretas de estilo', () => {
-    render(
+		const button = screen.getByRole('button', { name: 'Custom' });
 
-      <Button
-        label="Custom"
-        value="custom"
-        bgColor="bg-red-500"
-        textColor="text-black"
-        borderColor="border border-black"
-      />
-    );
+		expect(button).toHaveClass('bg-red-500');
+		expect(button).toHaveClass('text-black');
+		expect(button).toHaveClass('border');
+		expect(button).toHaveClass('border-black');
+	});
 
-    const button = screen.getByRole('button', { name: 'Custom' });
-		
-    expect(button).toHaveClass('bg-red-500');
-    expect(button).toHaveClass('text-black');
-    expect(button).toHaveClass('border');
-    expect(button).toHaveClass('border-black');
-  });
+	it('envia "random" no form quando botão random é clicado', async () => {
+		const handleSubmit = jest.fn((e, action) => {
+			e.preventDefault();
+			expect(action).toBe('random');
+		});
 
-  it('envia o valor correto no form quando clicado', async () => {
+		render(
+			<form onSubmit={(e) => handleSubmit(e, 'random')}>
+				<Button label='Piadoca' value='random' name='action' />
+			</form>
+		);
 
-    const handleSubmit = jest.fn((e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      expect((e.nativeEvent as SubmitEvent).submitter?.getAttribute('value')).toBe('random');
-    });
+		const user = userEvent.setup();
+		await user.click(screen.getByRole('button', { name: 'Piadoca' }));
 
-    render(
-      <form onSubmit={handleSubmit}>
-        <Button label="Piadoca" value="random" />
-      </form>
-    );
+		expect(handleSubmit).toHaveBeenCalledTimes(1);
+	});
 
-    const button = screen.getByRole('button', { name: 'Piadoca' });
-    await userEvent.click(button);
+	it('envia "search" no form quando botão search é clicado', async () => {
+		const handleSubmit = jest.fn((e, action) => {
+			e.preventDefault();
+			expect(action).toBe('search');
+		});
 
-    expect(handleSubmit).toHaveBeenCalledTimes(1);
-  });
+		render(
+			<form onSubmit={(e) => handleSubmit(e, 'search')}>
+				<Button label='Buscar' value='search' name='action' />
+			</form>
+		);
+
+		const user = userEvent.setup();
+		await user.click(screen.getByRole('button', { name: 'Buscar' }));
+
+		expect(handleSubmit).toHaveBeenCalledTimes(1);
+	});
 });

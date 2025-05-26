@@ -1,7 +1,7 @@
 export type SearchFormProps = {
   userQuery: string;
-  onQueryChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>, action: 'search' | 'random') => void;
+  onQueryChange: (query: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
 
 export type JokeType = {
@@ -16,14 +16,14 @@ export type JokeListProps = {
 };
 
 export type ButtonProps = {
-	label: string;
-	value: string;
-	name?: string;
-	bgColor?: string;
-	textColor?: string;
-	borderColor?: string;
-  type?: 'submit' | 'button' | 'reset';
-  onClick?: () => void;
+	 label: string;
+    value: string;
+    name?: string;
+    bgColor?: string;
+    textColor?: string;
+    borderColor?: string;
+    type?: 'submit' | 'button' | 'reset';
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 

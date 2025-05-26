@@ -27,12 +27,12 @@ describe('Button', () => {
 
 		render(
 			<form onSubmit={(e) => handleSubmit(e, 'random')}>
-				<Button label='Piadoca' value='random' name='action' />
+				<Button label='Me dê uma piada 🪄' value='random' name='action' />
 			</form>
 		);
 
 		const user = userEvent.setup();
-		await user.click(screen.getByRole('button', { name: 'Piadoca' }));
+		await user.click(screen.getByRole('button', { name: 'Me dê uma piada 🪄' }));
 
 		expect(handleSubmit).toHaveBeenCalledTimes(1);
 	});

@@ -1,18 +1,30 @@
-import React from 'react'
-import { JokeListProps } from '@/types/types'
+import React, { useState } from 'react';
+import Button from '@components/Button';
+import { JokeListProps } from '@/types/types';
 
 const JokeList = ({ jokes }: JokeListProps) => {
+	const [jokesCount, setJokesCount] = useState(5);
+
 	if (!jokes.length) return null;
 
-	return (
-		<ul className='space-y-4'>
-			{jokes.map((joke) => (
-				<li key={joke.id} className='p-4 border rounded shadow'>
-					<p>{joke.value}</p>
-				</li>
-			))}
-		</ul>
-	);
-}
+	const handleShowMore = () => setJokesCount((prev) => prev + 5);
 
-export default JokeList
+	return (
+		<>
+			<ul className='space-y-4'>
+				{jokes.slice(0, jokesCount).map((joke) => (
+					<li key={joke.id} className='p-4 border rounded shadow'>
+						<p>{joke.value}</p>
+					</li>
+				))}
+			</ul>
+			{jokesCount < jokes.length && (
+				<div className='flex justify-center mt-4'>
+					<Button label='Mostrar mais resultados' onClick={handleShowMore} value='search' name='action' type='submit' />
+				</div>
+			)}
+		</>
+	);
+};
+
+export default JokeList;

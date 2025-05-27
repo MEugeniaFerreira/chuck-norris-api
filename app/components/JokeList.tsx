@@ -10,16 +10,29 @@ const JokeList = ({ jokes, searchQuery  }: JokeListProps) => {
 
 	const handleShowMore = () => setJokesCount((prev) => prev + 5);
 
+	const filteredJokes = searchQuery.trim()
+    ? jokes.filter((joke) => {
+        const escapedJoke = searchQuery
+          .trim()
+          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // scapes regex special characters
+          .replace(/\s+/g, ' '); // ignores extra spaces
+
+        const regex = new RegExp(`\\b${escapedJoke}\\b`, 'i');
+        return regex.test(joke.value);
+      })
+    : jokes;
+
 	return (
 		<>
 			<ul className='space-y-4'>
-				{jokes.slice(0, jokesCount).map((joke) => (
+				{filteredJokes.slice(0, jokesCount).map((joke) => (
 					<li key={joke.id} className='p-4 border rounded shadow'>
-						<p>{textHighlight(joke.value, searchQuery)}</p>
+						<p dangerouslySetInnerHTML={{ __html: textHighlight(joke.value, searchQuery) }} />
 					</li>
 				))}
 			</ul>
-			{jokesCount < jokes.length && (
+
+			{jokesCount < filteredJokes.length && (
 				<div className='flex justify-center mt-4'>
 					<Button label='Mostrar mais resultados' onClick={handleShowMore} value='search' name='action' type='submit' />
 				</div>

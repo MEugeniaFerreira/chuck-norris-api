@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Button from '@components/Button';
 import { JokeListProps } from '@/types/types';
+import textHighlight from '@/utils/textHighlight';
 
-const JokeList = ({ jokes }: JokeListProps) => {
+const JokeList = ({ jokes, searchQuery  }: JokeListProps) => {
 	const [jokesCount, setJokesCount] = useState(5);
 
 	if (!jokes.length) return null;
@@ -14,7 +15,7 @@ const JokeList = ({ jokes }: JokeListProps) => {
 			<ul className='space-y-4'>
 				{jokes.slice(0, jokesCount).map((joke) => (
 					<li key={joke.id} className='p-4 border rounded shadow'>
-						<p>{joke.value}</p>
+						<p>{textHighlight(joke.value, searchQuery)}</p>
 					</li>
 				))}
 			</ul>

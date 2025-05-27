@@ -19,13 +19,14 @@ export default function Home() {
 		e.preventDefault();
 
 		const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
-		const submitType = submitter?.value;
+		const submitAction = submitter?.value;
 
 		try {
-			if (submitType === 'search') {
+			if (submitAction === 'search') {
 				const jokes = await fetchJokesByUserQuery(userQuery);
 				setQueryResults(jokes);
-			} else if (submitType === 'random') {
+				
+			} else if (submitAction === 'random') {
 				const joke = await fetchRandomJoke();
 				setQueryResults([joke]);
 			}
@@ -51,7 +52,7 @@ export default function Home() {
 			)}
 			{error && <p className='text-center text-red-600'>{error}</p>}
 
-			<JokeList jokes={queryResults} />
+			<JokeList jokes={queryResults} searchQuery={userQuery}/>
 		</main>
 	);
 }

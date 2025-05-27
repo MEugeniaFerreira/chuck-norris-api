@@ -13,6 +13,7 @@ export type JokeType = {
 
 export type JokeListProps = {
   jokes: JokeType[];
+  searchQuery: string;
 };
 
 export type ButtonProps = {

@@ -12,6 +12,7 @@ export default function Home() {
 	const [queryResults, setQueryResults] = useState<JokeType[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(''); // initialize error state as empty string
+	const [hasSearched, setHasSearched] = useState(false);
 
 	const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true);
@@ -25,24 +26,35 @@ export default function Home() {
 			if (submitAction === 'search') {
 				const jokes = await fetchJokesByUserQuery(userQuery);
 				setQueryResults(jokes);
-				
+				setHasSearched(true);
+				setUserQuery('');
 			} else if (submitAction === 'random') {
+				setUserQuery(''); // clear user query for random joke
+				setQueryResults([]); // clear previous results
 				const joke = await fetchRandomJoke();
 				setQueryResults([joke]);
+				setHasSearched(true);
 			}
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Ops! Algo deu errado');
 		} finally {
-			await new Promise(res => setTimeout(res, 2000)); // Garante 3s de loading
+			await new Promise((res) => setTimeout(res, 2000)); // 2s loading delay
 			setLoading(false);
 		}
+	};
+
+	const handleQueryChange = (query: string) => {
+		setUserQuery(query);
+		setQueryResults([]); // clean the list when the user types
+		setHasSearched(false); // prevents showing results before search
+		setLoading(false); // reset loading state
 	};
 
 	return (
 		<main className='max-w-2xl mx-auto px-4 py-10'>
 			<h1 className='text-3xl font-bold text-center mb-10'>Buscador de Piadas do Chuck Norris</h1>
 
-			<SearchForm userQuery={userQuery} onQueryChange={setUserQuery} onSubmit={handleSearch} />
+			<SearchForm userQuery={userQuery} onQueryChange={handleQueryChange} onSubmit={handleSearch} />
 
 			{loading && (
 				<p className='text-center flex items-center justify-center gap-2 mb-4'>
@@ -52,7 +64,7 @@ export default function Home() {
 			)}
 			{error && <p className='text-center text-red-600'>{error}</p>}
 
-			<JokeList jokes={queryResults} searchQuery={userQuery}/>
+			{hasSearched && <JokeList jokes={queryResults} searchQuery={userQuery} />}
 		</main>
 	);
 }

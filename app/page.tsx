@@ -7,7 +7,7 @@ import SearchForm from '@components/SearchForm';
 import JokeList from '@components/JokeList';
 import { fetchRandomJoke, fetchJokesByUserQuery } from '@/services/index';
 
-export default function Home() {
+const Home = () => {
 	const [userQuery, setUserQuery] = useState('');
 	const [queryResults, setQueryResults] = useState<JokeType[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -67,4 +67,6 @@ export default function Home() {
 			{hasSearched && <JokeList jokes={queryResults} searchQuery={userQuery} />}
 		</main>
 	);
-}
+};
+
+export default Home;

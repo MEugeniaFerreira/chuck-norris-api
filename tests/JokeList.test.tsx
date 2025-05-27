@@ -20,7 +20,7 @@ const mockJokes: JokeType[] = [
 describe('JokeList', () => {
   it('renderiza a lista das piadas', () => {
   
-		render(<JokeList jokes={mockJokes} />);
+		render(<JokeList jokes={mockJokes} searchQuery={''} />);
 
     mockJokes.forEach((joke) => {
       expect(screen.getByText(joke.value)).toBeInTheDocument();
@@ -28,16 +28,7 @@ describe('JokeList', () => {
   });
 
   it('não renderiza nada se a lista estiver vazia', () => {
-    const { container } = render(<JokeList jokes={[]} />);
+    const { container } = render(<JokeList jokes={[]} searchQuery={''} />);
     expect(container.firstChild).toBeNull();
   });
-
-	/* it('renderiza o link correto para cada piada', () => {
-		render(<JokeList jokes={mockJokes} />);
-
-		mockJokes.forEach((joke) => {
-			const link = screen.getByRole('link', { name: joke.value });
-			expect(link).toHaveAttribute('href', joke.url);
-		});
-	}); */
 });

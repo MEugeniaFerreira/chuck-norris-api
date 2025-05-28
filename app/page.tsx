@@ -27,7 +27,6 @@ const Home = () => {
 				const jokes = await fetchJokesByUserQuery(userQuery);
 				setQueryResults(jokes);
 				setHasSearched(true);
-				setUserQuery('');
 			} else if (submitAction === 'random') {
 				setUserQuery(''); // clear user query for random joke
 				setQueryResults([]); // clear previous results

@@ -11,16 +11,17 @@ const JokeList = ({ jokes, searchQuery  }: JokeListProps) => {
 	const handleShowMore = () => setJokesCount((prev) => prev + 5);
 
 	const filteredJokes = searchQuery.trim()
-    ? jokes.filter((joke) => {
-        const escapedJoke = searchQuery
-          .trim()
-          .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // scapes regex special characters
-          .replace(/\s+/g, ' '); // ignores extra spaces
+  ? jokes.filter((joke) => {
+      const cleanedInput = searchQuery.trim().replace(/\s+/g, ' ');
+      const escapedSearch = cleanedInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-        const regex = new RegExp(`\\b${escapedJoke}\\b`, 'i');
-        return regex.test(joke.value);
-      })
-    : jokes;
+      const regex = cleanedInput.includes(' ')
+        ? new RegExp(`${escapedSearch}`, 'i') // busca por frase
+        : new RegExp(`\\b${escapedSearch}\\b`, 'i'); // busca por palavra
+
+      return regex.test(joke.value);
+    })
+  : jokes;
 
 	return (
 		<>

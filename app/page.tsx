@@ -14,33 +14,28 @@ const Home = () => {
 	const [error, setError] = useState(''); // initialize error state as empty string
 	const [hasSearched, setHasSearched] = useState(false);
 
-	const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-		setLoading(true);
-		setError('');
-		e.preventDefault();
+	const handleSearch = async (action: 'search' | 'random') => {
+  setLoading(true);
+  setError('');
 
-		const submitter = (e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
-		const submitAction = submitter?.value;
-
-		try {
-			if (submitAction === 'search') {
-				const jokes = await fetchJokesByUserQuery(userQuery);
-				setQueryResults(jokes);
-				setHasSearched(true);
-			} else if (submitAction === 'random') {
-				setUserQuery(''); // clear user query for random joke
-				setQueryResults([]); // clear previous results
-				const joke = await fetchRandomJoke();
-				setQueryResults([joke]);
-				setHasSearched(true);
-			}
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Ops! Algo deu errado');
-		} finally {
-			await new Promise((res) => setTimeout(res, 2000)); // 2s loading delay
-			setLoading(false);
-		}
-	};
+  try {
+    if (action === 'search') {
+      const jokes = await fetchJokesByUserQuery(userQuery);
+      setQueryResults(jokes);
+      setHasSearched(true);
+    } else if (action === 'random') {
+      const joke = await fetchRandomJoke();
+      setUserQuery('');
+      setQueryResults([joke]);
+      setHasSearched(true);
+    }
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Ops! Algo deu errado');
+  } finally {
+    await new Promise((res) => setTimeout(res, 2000));
+    setLoading(false);
+  }
+};
 
 	const handleQueryChange = (query: string) => {
 		setUserQuery(query);
@@ -53,7 +48,7 @@ const Home = () => {
 		<main className='max-w-2xl mx-auto px-4 py-10'>
 			<h1 className='text-3xl font-bold text-center mb-10'>Buscador de Piadas do Chuck Norris</h1>
 
-			<SearchForm userQuery={userQuery} onQueryChange={handleQueryChange} onSubmit={handleSearch} />
+			<SearchForm userQuery={userQuery} onQueryChange={handleQueryChange} onAction={handleSearch} />
 
 			{loading && (
 				<p className='text-center flex items-center justify-center gap-2 mb-4'>

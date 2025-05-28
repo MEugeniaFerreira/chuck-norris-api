@@ -8,7 +8,7 @@ const Button = ({
   bgColor = 'bg-blue-600',
   textColor = 'text-white',
   borderColor = '',
-  type = 'submit',
+  type = 'button',
   onClick
 }: ButtonProps) => (
   <button

@@ -15,7 +15,7 @@ describe('Button', () => {
 
 	render(
 		<form onSubmit={handleSubmit}>
-			<Button label='Me dê uma piada 🪄' value='random' name='action' />
+			<Button label='Me dê uma piada 🪄' value='random' name='action' type='submit'/>
 		</form>
 	);
 
@@ -32,7 +32,7 @@ describe('Button', () => {
 
     render(
         <form onSubmit={handleSubmit}>
-            <Button label='Buscar' value='search' name='action' />
+            <Button label='Buscar' value='search' name='action' type='submit'/>
         </form>
     );
 

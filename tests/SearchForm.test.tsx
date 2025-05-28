@@ -2,62 +2,65 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import SearchForm from '@components/SearchForm';
-import { waitForElementToBeRemoved } from '@testing-library/react';
+import React from 'react';
 
 describe('SearchForm', () => {
-	it('renderiza input e botões', () => {
-		render(<SearchForm userQuery='' onQueryChange={() => {}} onSubmit={() => {}} />);
-		expect(screen.getByPlaceholderText(/Digite uma palavra/i)).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /Buscar/i })).toBeInTheDocument();
-		expect(screen.getByRole('button', { name: /Me dê uma piada 🪄/i })).toBeInTheDocument();
-	});
+  it('renderiza input e botões', () => {
+    render(<SearchForm userQuery='' onQueryChange={() => {}} onAction={() => {}} />);
+    expect(screen.getByPlaceholderText(/Digite uma palavra/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Buscar/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Me dê uma piada 🪄/i })).toBeInTheDocument();
+  });
 
-	it('chama onQueryChange quando o texto é digitado', async () => {
-		let value = '';
+  it('chama onQueryChange quando o texto é digitado', async () => {
+    const handleQueryChange = jest.fn();
+    const user = userEvent.setup();
 
-		const handleQueryChange = jest.fn((v) => {
-			value = v;
-			rerender(<SearchForm userQuery={value} onQueryChange={handleQueryChange} onSubmit={() => {}} />);
-		});
-		const user = userEvent.setup();
-		const { rerender } = render(<SearchForm userQuery={value} onQueryChange={handleQueryChange} onSubmit={() => {}} />);
-		const input = screen.getByPlaceholderText(/Digite uma palavra/i);
-		await user.type(input, 'chuck');
+    // estado controlado dentro do teste
+    const Wrapper = () => {
+      const [query, setQuery] = React.useState('');
+      return (
+        <SearchForm
+          userQuery={query}
+          onQueryChange={(text) => {
+            handleQueryChange(text);
+            setQuery(text); // atualiza o estado controlado
+          }}
+          onAction={() => {}}
+        />
+      );
+    };
 
-		expect(handleQueryChange).toHaveBeenCalledTimes(5);
-		expect(handleQueryChange).toHaveBeenLastCalledWith('chuck');
-		expect(handleQueryChange.mock.calls).toEqual([['c'], ['ch'], ['chu'], ['chuc'], ['chuck']]);
-	});
+    render(<Wrapper />);
+    const input = screen.getByPlaceholderText(/Digite uma palavra/i);
 
-	it('envia a query com o botão "Buscar"', async () => {
-		const user = userEvent.setup();
-		const handleSubmit = jest.fn((e, action) => {
-			e.preventDefault();
-			expect(action).toBe('search');
-		});
+    await user.type(input, 'chuck');
 
-		render(<SearchForm userQuery='' onQueryChange={() => {}} onSubmit={(e) => handleSubmit(e, 'search')} />);
-		const searchButton = screen.getByRole('button', { name: /Buscar/i });
-		await user.click(searchButton);
+    expect(handleQueryChange).toHaveBeenCalledTimes(5);
+    expect(handleQueryChange).toHaveBeenLastCalledWith('chuck');
+  });
 
-		expect(handleSubmit).toHaveBeenCalled();
-	});
+  it('chama onAction com "search" ao clicar no botão Buscar', async () => {
+    const handleAction = jest.fn();
+    const user = userEvent.setup();
+    render(<SearchForm userQuery='' onQueryChange={() => {}} onAction={handleAction} />);
 
-	it('envia a query com o botão "feeling lucky"', async () => {
-		const user = userEvent.setup();
+    const searchButton = screen.getByRole('button', { name: /Buscar/i });
+    await user.click(searchButton);
 
-		const handleSubmit = jest.fn((e, action) => {
-			e.preventDefault();
-			expect(action).toBe('random');
-		});
+    expect(handleAction).toHaveBeenCalledTimes(1);
+    expect(handleAction).toHaveBeenCalledWith('search');
+  });
 
-		render(<SearchForm userQuery='' onQueryChange={() => {}} onSubmit={(e) => handleSubmit(e, 'random')} />);
-		
-		const randomButton = screen.getByRole('button', { name: /Me dê uma piada 🪄/i });
-		
-		await user.click(randomButton);
-		await waitForElementToBeRemoved(() => screen.getByText(/Carregando.../i));
-		
-		expect(handleSubmit).toHaveBeenCalled();
-	});
+  it('chama onAction com "random" ao clicar no botão "Me dê uma piada 🪄"', async () => {
+    const handleAction = jest.fn();
+    const user = userEvent.setup();
+    render(<SearchForm userQuery='' onQueryChange={() => {}} onAction={handleAction} />);
+
+    const randomButton = screen.getByRole('button', { name: /Me dê uma piada 🪄/i });
+    await user.click(randomButton);
+
+    expect(handleAction).toHaveBeenCalledTimes(1);
+    expect(handleAction).toHaveBeenCalledWith('random');
+  });
 });

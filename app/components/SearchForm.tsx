@@ -4,7 +4,7 @@ import { SearchFormProps } from '@/types/types';
 
 const SearchForm = ({ userQuery, onQueryChange, onAction }: SearchFormProps) => {
   return (
-    <form className="flex gap-2 mb-6" onSubmit={(e) => e.preventDefault()}>
+    <form className="flex flex-col sm:flex-row gap-2 mb-6" onSubmit={(e) => e.preventDefault()}>
       <input
         className="flex-1 p-2 border rounded"
         placeholder="Digite uma palavra"
